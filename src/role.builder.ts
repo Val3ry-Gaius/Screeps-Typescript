@@ -28,8 +28,8 @@ export const roleBuilder = {
         creep.moveTo(targetConsSite[0], { visualizePathStyle: { stroke: "#ffffff" } });
         // creep.say("🔄 build");
       }
-    } else if (targetStoring.length > 0) {
-      M.cm(creep).task = "storing";
+      /*} else if (targetStoring.length > 0) {
+      M.cm(creep).task = "storing";*/
     } else {
       M.cm(creep).task = "upgrading";
     }
