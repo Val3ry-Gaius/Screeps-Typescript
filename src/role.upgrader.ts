@@ -1,16 +1,32 @@
+import * as M from "./memory";
 export const roleUpgrader = {
 
   run(creep: Creep): void {
-    if (creep.carry.energy < creep.carryCapacity) {
-      const sources = creep.room.find<Source>(FIND_SOURCES);
-      if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[0], {visualizePathStyle: {stroke: "#ffaa00"}});
+    const sources = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+    const target = creep.room.controller as StructureController;
+    const harvesting = () => {
+      if (creep.harvest(sources as Source) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(sources as Source, { visualizePathStyle: { stroke: "#ffaa00" } });
+        // creep.say("🔄 harvest");
       }
-    } else {
-      const targets = creep.room.controller as StructureController;
-      if (creep.transfer(targets, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets, {visualizePathStyle: {stroke: "#ffffff"}});
-        }
+    };
+    const upgrading = () => {
+      if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(target, { visualizePathStyle: { stroke: "#ffffff" } });
+        // creep.say("🔄 upgrade");
+      }
+    };
+
+    if (M.cm(creep).task === "upgrading" && creep.carry.energy === 0) {
+      M.cm(creep).task = "harvesting";
+    } else if (M.cm(creep).task === "harvesting" && creep.carry.energy === creep.carryCapacity) {
+      M.cm(creep).task = "upgrading";
+    }
+
+    if (M.cm(creep).task === "harvesting") {
+      harvesting();
+    } else if (M.cm(creep).task === "upgrading") {
+      upgrading();
     }
   }
 };

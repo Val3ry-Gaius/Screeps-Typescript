@@ -1,30 +1,40 @@
 import * as M from "./memory";
+import { roleUpgrader } from "./role.upgrader";
 
 export const roleBuilder = {
 
-  run(creep: Creep) {
-    if (M.cm(creep).building && creep.carry.energy === 0) {
-      M.cm(creep).building = false;
-      creep.say("🔄 harvest");
-    }
-    if (!M.cm(creep).building && creep.carry.energy === creep.carryCapacity) {
-      M.cm(creep).building = true;
-      creep.say("🚧 build");
-    }
-    if (M.cm(creep).building) {
-      const targets = creep.room.find<ConstructionSite>(FIND_CONSTRUCTION_SITES);
-      if (targets.length) {
-        if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {
-          creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } }
-          );
-        }
+  run(creep: Creep): void {
+    const sources = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+    const targetConsSite = creep.room.find<ConstructionSite>(FIND_CONSTRUCTION_SITES);
+    const harvesting = () => {
+      if (creep.harvest(sources as Source) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(sources as Source, { visualizePathStyle: { stroke: "#ffaa00" } });
+        // creep.say("🔄 harvest");
       }
-    } else {
-      const sources = creep.room.find<Source>(FIND_SOURCES);
-      if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[0], { visualizePathStyle: { stroke: "#ffaa00" } }
-        );
+    };
+    const building = () => {
+      if (targetConsSite.length > 0) {
+      if (creep.build(targetConsSite[0]) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(targetConsSite[0], { visualizePathStyle: { stroke: "#ffffff" } });
+        // creep.say("🔄 build");
       }
+    }
+    };
+
+    if (M.cm(creep).task === "building" && creep.carry.energy === 0) {
+      M.cm(creep).task = "harvesting";
+    } else if (M.cm(creep).task === "harvesting" && creep.carry.energy === creep.carryCapacity) {
+      M.cm(creep).task = "building";
+    } else if (targetConsSite.length === 0) {
+      M.cm(creep).task = "upgrading";
+    }
+
+    if (M.cm(creep).task === "harvesting") {
+      harvesting();
+    } else if (M.cm(creep).task === "building") {
+      building();
+    } else if (M.cm(creep).task === "upgrading") {
+      roleUpgrader.run(creep);
     }
   }
 };
