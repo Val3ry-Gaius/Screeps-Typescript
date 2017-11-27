@@ -10,10 +10,12 @@ export const roleBuilder = {
 
     if (!M.cm(creep).source) {
       for (const source in sources) {
-        const upgraders = _.filter(Game.creeps, () => (
-          M.cm(creep).role === "upgrader") && (
+        const builders = _.filter(Game.creeps, () => (
+          M.cm(creep).role === "builder") && (
             M.cm(creep).source === source));
-        if (upgraders.length !== 2) {
+        const totalBuilders = _.filter(Game.creeps, () =>
+          M.cm(creep).role === "builder");
+        if (builders.length !== (Math.ceil(totalBuilders.length / 2))) {
           M.cm(creep).source = source;
         }
       }
