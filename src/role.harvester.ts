@@ -1,9 +1,23 @@
+import * as _ from "lodash";
 import * as M from "./memory";
 import { roleBuilder } from "./role.builder";
 export const roleHarvester = {
 
   run(creep: Creep): void {
-    const sources = creep.pos.findClosestByPath(FIND_SOURCES);
+    const sources = creep.room.find<Source>(FIND_SOURCES);
+
+    if (!M.cm(creep).source) {
+      for (source in sources) {
+        const harvesters = _.filter(Game.creeps, () => (
+          M.cm(creep).role === "harvester") && (
+            M.cm(creep).source === source));
+        if (harvesters.length !== 2) {
+          M.cm(creep).source = source;
+        }
+      }
+    }
+
+    // const sources = creep.pos.findClosestByPath(FIND_SOURCES);
     const targetStoring = creep.room.find<Structure>(FIND_STRUCTURES, {
       filter: (structure: StructureExtension | StructureSpawn | StructureTower) => {
         if (structure.structureType === STRUCTURE_EXTENSION || STRUCTURE_SPAWN || STRUCTURE_TOWER) {
@@ -21,11 +35,11 @@ export const roleHarvester = {
     };
     const storing = () => {
       if (targetStoring.length > 0) {
-      if (creep.transfer(targetStoring[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(targetStoring[0], { visualizePathStyle: { stroke: "#ffffff" } });
-        // creep.say("🔄 storing");
+        if (creep.transfer(targetStoring[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(targetStoring[0], { visualizePathStyle: { stroke: "#ffffff" } });
+          // creep.say("🔄 storing");
+        }
       }
-    }
     };
 
     if (M.cm(creep).task === "storing" && creep.carry.energy === 0) {

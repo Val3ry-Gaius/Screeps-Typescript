@@ -24,7 +24,7 @@ export function loop() {
     const newName = "Harvester" + Game.time;
     console.log("Spawning new harvester: " + newName);
     Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
-      { memory: { role: "harvester", task: "harvesting" } });
+      { memory: { role: "harvester", task: "harvesting", source: "" } });
   } else if (upgraders.length < minUpgraders) {
     const newName = "Upgrader" + Game.time;
     console.log("Spawning new upgrader: " + newName);
