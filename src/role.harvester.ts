@@ -4,10 +4,11 @@ import { roleBuilder } from "./role.builder";
 export const roleHarvester = {
 
   run(creep: Creep): void {
+
     const sources = creep.room.find<Source>(FIND_SOURCES);
 
     if (!M.cm(creep).source) {
-      for (source in sources) {
+      for (const source in sources) {
         const harvesters = _.filter(Game.creeps, () => (
           M.cm(creep).role === "harvester") && (
             M.cm(creep).source === source));
@@ -28,8 +29,8 @@ export const roleHarvester = {
       }
     });
     const harvesting = () => {
-      if (creep.harvest(sources as Source) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources as Source, { visualizePathStyle: { stroke: "#ffaa00" } });
+      if (creep.harvest(sources[Number(M.cm(creep).source)]) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(sources[Number(M.cm(creep).source)], { visualizePathStyle: { stroke: "#ffaa00" } });
         // creep.say("🔄 harvest");
       }
     };
