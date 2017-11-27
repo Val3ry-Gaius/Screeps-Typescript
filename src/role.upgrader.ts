@@ -2,7 +2,7 @@ import * as M from "./memory";
 export const roleUpgrader = {
 
   run(creep: Creep): void {
-    const sources = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+    const sources = creep.pos.findClosestByPath(FIND_SOURCES);
     const target = creep.room.controller as StructureController;
     const harvesting = () => {
       if (creep.harvest(sources as Source) === ERR_NOT_IN_RANGE) {

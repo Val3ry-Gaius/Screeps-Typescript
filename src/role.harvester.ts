@@ -3,7 +3,7 @@ import { roleBuilder } from "./role.builder";
 export const roleHarvester = {
 
   run(creep: Creep): void {
-    const sources = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+    const sources = creep.pos.findClosestByPath(FIND_SOURCES);
     const targetStoring = creep.room.find<Structure>(FIND_STRUCTURES, {
       filter: (structure: StructureExtension | StructureSpawn | StructureTower) => {
         if (structure.structureType === STRUCTURE_EXTENSION || STRUCTURE_SPAWN || STRUCTURE_TOWER) {
@@ -32,7 +32,7 @@ export const roleHarvester = {
       M.cm(creep).task = "harvesting";
     } else if (M.cm(creep).task === "harvesting" && creep.carry.energy === creep.carryCapacity) {
       M.cm(creep).task = "storing";
-    } else if (targetStoring.length === 0) {
+    } else if (!targetStoring) {
       M.cm(creep).task = "building";
     }
 
