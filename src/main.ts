@@ -16,7 +16,7 @@ export function loop() {
   const harvesters = _.filter(Game.creeps, (creep) => M.cm(creep).role === "harvester");
   const upgraders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "upgrader");
   const builders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "builder");
-  const minHarvesters = 2;
+  const minHarvesters = 4;
   const minUpgraders = 2;
   const minBuilders = 6;
 
