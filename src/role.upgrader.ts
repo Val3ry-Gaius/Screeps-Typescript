@@ -9,8 +9,8 @@ export const roleUpgrader = {
     // const sources = creep.pos.findClosestByPath(FIND_SOURCES);
     const target = creep.room.controller as StructureController;
     const harvesting = () => {
-      if (creep.harvest(sources[1]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[1], { visualizePathStyle: { stroke: "#ffaa00" } });
+      if (creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(sources[0], { visualizePathStyle: { stroke: "#ffaa00" } });
         // creep.say("🔄 harvest");
       }
     };
