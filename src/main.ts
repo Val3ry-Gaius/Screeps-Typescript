@@ -22,22 +22,22 @@ export function loop() {
 
   if (harvesters.length < minHarvesters) {
     const newName = "Harvester" + Game.time;
-    console.log("Spawning new harvester: " + newName);
+    // console.log("Spawning new harvester: " + newName);
     Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
       { memory: { role: "harvester", task: "harvesting", source: "" } });
   } else if (upgraders.length < minUpgraders) {
     const newName = "Upgrader" + Game.time;
-    console.log("Spawning new upgrader: " + newName);
+    // console.log("Spawning new upgrader: " + newName);
     Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
       { memory: { role: "upgrader", task: "harvesting" } });
   } else if (builders.length < minBuilders) {
     const newName = "Builder" + Game.time;
-    console.log("Spawning new builder: " + newName);
+    // console.log("Spawning new builder: " + newName);
     Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
       { memory: { role: "builder", task: "harvesting" } });
   } else {
     const newName = "Builder" + Game.time;
-    console.log("Spawning new builder: " + newName);
+    // console.log("Spawning new builder: " + newName);
     Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
       { memory: { role: "builder", task: "harvesting" } });
   }

@@ -8,19 +8,6 @@ export const roleBuilder = {
   run(creep: Creep): void {
     const sources = creep.room.find<Source>(FIND_SOURCES);
 
-    if (!M.cm(creep).source) {
-      for (const source in sources) {
-        const builders = _.filter(Game.creeps, () => (
-          M.cm(creep).role === "builder") && (
-            M.cm(creep).source === source));
-        const totalBuilders = _.filter(Game.creeps, () =>
-          M.cm(creep).role === "builder");
-        if (builders.length !== (Math.ceil(totalBuilders.length / 2))) {
-          M.cm(creep).source = source;
-        }
-      }
-    }
-
     // const sources = creep.pos.findClosestByPath(FIND_SOURCES);
     const targetConsSite = creep.room.find<ConstructionSite>(FIND_CONSTRUCTION_SITES);
     const targetStoring = creep.room.find<Structure>(FIND_STRUCTURES, {
@@ -33,8 +20,8 @@ export const roleBuilder = {
       }
     });
     const harvesting = () => {
-      if (creep.harvest(sources[Number(M.cm(creep).source)]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(sources[Number(M.cm(creep).source)], { visualizePathStyle: { stroke: "#ffaa00" } });
+      if (creep.harvest(sources[1]) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(sources[1], { visualizePathStyle: { stroke: "#ffaa00" } });
         // creep.say("🔄 harvest");
       }
     };
