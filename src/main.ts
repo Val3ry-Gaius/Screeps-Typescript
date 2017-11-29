@@ -3,6 +3,7 @@ import * as M from "./memory";
 import { roleBuilder } from "./role.builder";
 import { roleHarvester } from "./role.harvester";
 import { roleUpgrader } from "./role.upgrader";
+import { runTowers } from "./tower";
 
 export function loop() {
 
@@ -16,9 +17,9 @@ export function loop() {
   const harvesters = _.filter(Game.creeps, (creep) => M.cm(creep).role === "harvester");
   const upgraders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "upgrader");
   const builders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "builder");
-  const minHarvesters = 8;
-  const minUpgraders = 6;
-  const minBuilders = 6;
+  const minHarvesters = 10;
+  const minUpgraders = 10;
+  const minBuilders = 10;
 
   if (harvesters.length < minHarvesters) {
     const newName = "Harvester" + Game.time;
@@ -50,7 +51,7 @@ export function loop() {
       Game.spawns.Spawn1.pos.y,
       { align: "left", opacity: 0.8 });
   }
-// require('role.' + creep.memory.role).run(creep);
+  // require('role.' + creep.memory.role).run(creep);
   for (const name in Game.creeps) {
     const creep = Game.creeps[name];
     if (M.cm(creep).role === "harvester") {
@@ -63,22 +64,14 @@ export function loop() {
       roleBuilder.run(creep);
     }
   }
-  function runTowers(room: Room): void {
-
-    const towers = room.find<Tower>(FIND_STRUCTURES, {
-      filter: (s: Tower) => s.structureType === STRUCTURE_TOWER
-    });
-
-    const target = room.find<Creep>(FIND_HOSTILE_CREEPS);
-
-    const targetRepair = room.find<Structure>(FIND_STRUCTURES, {
-      filter: (s: Structure) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL
-    });
-
-    if (target.length > 0) {
-      towers.forEach((tower: Tower) => {
-        tower.attack(target[0]);
-      });
+  // runTowers.run(Game.rooms.room);
+  const towers: Tower[] = Game.rooms.W34N12.find<StructureTower>(FIND_STRUCTURES, {
+    filter: (s: StructureTower) => s.structureType === STRUCTURE_TOWER
+});
+  for (const tower of towers) {
+    const target: Creep | null = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+    if (target) {
+      tower.attack(target);
     }
-  }
+}
 }
