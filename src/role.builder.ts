@@ -25,8 +25,8 @@ export const roleBuilder = {
           creep.moveTo(targetConsSite[0], { visualizePathStyle: { stroke: "#ffffff" } });
           // creep.say("🔄 build");
         }
-      } else {
-        M.cm(creep).task = "upgrading";
+      /*} else {
+        M.cm(creep).task = "upgrading";*/
       }
     };
     /*const repairing = () => {
@@ -40,8 +40,8 @@ export const roleBuilder = {
       }
     };*/
 
-    if (M.cm(creep).task === "building" ||
-        M.cm(creep).task === "upgrading" &&
+    if (M.cm(creep).task === "building" /*||
+        M.cm(creep).task === "upgrading"*/ &&
         creep.carry.energy === 0) {
       M.cm(creep).task = "harvesting";
     } else if (M.cm(creep).task === "harvesting" && creep.carry.energy === creep.carryCapacity) {
@@ -52,8 +52,8 @@ export const roleBuilder = {
       harvesting();
     } else if (M.cm(creep).task === "building") {
       building();
-    } else if (M.cm(creep).task === "upgrading") {
+    } /*else if (M.cm(creep).task === "upgrading") {
       roleUpgrader.run(creep);
-    }
+    }*/
   }
 };
