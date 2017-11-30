@@ -12,7 +12,23 @@ export const roleBuilder = {
     /*const targetRepair = creep.room.find<Structure>(FIND_STRUCTURES, {
       filter: (s: Structure) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL
     });*/
-
+    const targetStoring = creep.room.find<Structure>(FIND_STRUCTURES, {
+      filter: (structure: StructureExtension | StructureTower) => {
+        if (structure.structureType === STRUCTURE_EXTENSION || STRUCTURE_TOWER) {
+          return structure.energy < structure.energyCapacity;
+        } else {
+          return false;
+        }
+      }
+    });
+    const storing = () => {
+      if (targetStoring.length > 0) {
+        if (creep.transfer(targetStoring[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(targetStoring[0], { visualizePathStyle: { stroke: "#ffffff" } });
+          // creep.say("🔄 storing");
+        }
+      }
+    };
     const harvesting = () => {
       if (creep.harvest(sources[1]) === ERR_NOT_IN_RANGE) {
         creep.moveTo(sources[1], { visualizePathStyle: { stroke: "#ffaa00" } });
@@ -25,8 +41,8 @@ export const roleBuilder = {
           creep.moveTo(targetConsSite[0], { visualizePathStyle: { stroke: "#ffffff" } });
           // creep.say("🔄 build");
         }
-      /*} else {
-        M.cm(creep).task = "upgrading";*/
+      } else {
+        M.cm(creep).task = "storing";
       }
     };
     /*const repairing = () => {
@@ -40,11 +56,14 @@ export const roleBuilder = {
       }
     };*/
 
-    if (M.cm(creep).task === "building" /*||
-        M.cm(creep).task === "upgrading"*/ &&
-        creep.carry.energy === 0) {
+    if (M.cm(creep).task === "building" &&
+      creep.carry.energy === 0) {
       M.cm(creep).task = "harvesting";
-    } else if (M.cm(creep).task === "harvesting" && creep.carry.energy === creep.carryCapacity) {
+    } else if (M.cm(creep).task === "storing" &&
+      creep.carry.energy === 0) {
+      M.cm(creep).task = "harvesting";
+    } else if (M.cm(creep).task === "harvesting" &&
+      creep.carry.energy === creep.carryCapacity) {
       M.cm(creep).task = "building";
     }
 
@@ -52,8 +71,8 @@ export const roleBuilder = {
       harvesting();
     } else if (M.cm(creep).task === "building") {
       building();
-    } /*else if (M.cm(creep).task === "upgrading") {
-      roleUpgrader.run(creep);
-    }*/
+    } else if (M.cm(creep).task === "storing") {
+      storing();
+    }
   }
 };

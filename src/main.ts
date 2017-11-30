@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import { buildScaledCreep } from "prototype.spawn";
 import * as M from "./memory";
 import { roleBuilder } from "./role.builder";
 import { roleHarvester } from "./role.harvester";
@@ -18,29 +19,32 @@ export function loop() {
   const upgraders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "upgrader");
   const builders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "builder");
   const minHarvesters = 10;
-  const minUpgraders = 10;
-  const minBuilders = 10;
+  const minUpgraders = 5;
+  const minBuilders = 5;
+  const totalRoomEnergy = Game.spawns.Spawn1.room.energyCapacityAvailable;
 
   if (harvesters.length < minHarvesters) {
     const newName = "Harvester" + Game.time;
     // console.log("Spawning new harvester: " + newName);
-    Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
-      { memory: { role: "harvester", task: "harvesting", source: "" } });
+    buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting");
+    if (buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting") === ERR_NOT_ENOUGH_ENERGY &&
+    harvesters.length === 0) {
+      buildScaledCreep(200, newName, "harvester", "harvesting");
+    } else {
+      buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting");
+    }
   } else if (upgraders.length < minUpgraders) {
     const newName = "Upgrader" + Game.time;
     // console.log("Spawning new upgrader: " + newName);
-    Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
-      { memory: { role: "upgrader", task: "harvesting" } });
+    buildScaledCreep(totalRoomEnergy, newName, "upgrader", "harvesting");
   } else if (builders.length < minBuilders) {
     const newName = "Builder" + Game.time;
     // console.log("Spawning new builder: " + newName);
-    Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
-      { memory: { role: "builder", task: "harvesting" } });
+    buildScaledCreep(totalRoomEnergy, newName, "builder", "harvesting");
   } else {
     const newName = "Builder" + Game.time;
     // console.log("Spawning new builder: " + newName);
-    Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, MOVE], newName,
-      { memory: { role: "builder", task: "harvesting" } });
+    buildScaledCreep(totalRoomEnergy, newName, "builder", "harvesting");
   }
 
   if (Game.spawns.Spawn1.spawning) {
