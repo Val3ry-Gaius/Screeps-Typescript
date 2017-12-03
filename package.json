@@ -3,30 +3,41 @@
   "version": "3.0.0",
   "description": "",
   "main": "index.js",
+  "//": "If you add or change the names of destinations in screeps.json, make sure you update these scripts to reflect the changes",
   "scripts": {
+    "lint": "tslint \"src/**/*.ts\"",
+    "push-main": "rollup -c --dest main",
+    "push-pserver": "rollup -c --dest pserver",
+    "push-sim": "rollup -c --dest sim",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "rC": "rollup -c"
+    "watch-main": "rollup -cw --dest main",
+    "watch-pserver": "rollup -cw --dest pserver",
+    "watch-sim": "rollup -cw --dest sim"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Val3ry-Gaius/Screeps-Typescript.git"
+    "url": "git+https://github.com/screepers/screeps-typescript-starter.git"
   },
   "author": "",
-  "license": "MIT",
+  "license": "Unlicense",
   "bugs": {
     "url": "https://github.com/screepers/screeps-typescript-starter/issues"
   },
   "homepage": "https://github.com/screepers/screeps-typescript-starter#readme",
   "devDependencies": {
-    "@types/lodash": "^4.14.85",
+    "@types/lodash": "^3.10.1",
+    "@types/source-map": "^0.5.2",
     "rollup": "^0.51.8",
     "rollup-plugin-clean": "^1.0.0",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-screeps-upload": "git+https://github.com/Val3ry-Gaius/Screeps-Typescript.git#master",
-    "rollup-plugin-typescript2": "^0.8.1",
+    "rollup-plugin-screeps": "0.0.1",
+    "rollup-plugin-typescript2": "^0.8.4",
     "tslint": "^5.8.0",
     "typed-screeps": "^1.0.4",
     "typescript": "^2.6.1"
+  },
+  "dependencies": {
+    "source-map": "^0.6.1"
   }
 }

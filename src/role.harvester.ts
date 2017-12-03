@@ -9,10 +9,14 @@ export const roleHarvester = {
 
     // const sources = creep.pos.findClosestByPath(FIND_SOURCES);
     const targetStoring = creep.room.find<Structure>(FIND_STRUCTURES, {
-      filter: (structure: StructureExtension | StructureSpawn | StructureTower) => {
-        if (structure.structureType === STRUCTURE_EXTENSION || STRUCTURE_SPAWN || STRUCTURE_TOWER) {
+      filter: (structure: StructureExtension | StructureSpawn | StructureTower | StructureStorage) => {
+        if (structure.structureType === STRUCTURE_EXTENSION ||
+          structure.structureType === STRUCTURE_SPAWN ||
+          structure.structureType === STRUCTURE_TOWER) {
           return structure.energy < structure.energyCapacity;
-        } else {
+        } else if (structure.structureType === STRUCTURE_STORAGE) {
+          return _.sum(structure.store) < structure.storeCapacity;
+          } else {
           return false;
         }
       }
@@ -36,16 +40,12 @@ export const roleHarvester = {
       M.cm(creep).task = "harvesting";
     } else if (M.cm(creep).task === "harvesting" && creep.carry.energy === creep.carryCapacity) {
       M.cm(creep).task = "storing";
-    } else if (!targetStoring) {
-      M.cm(creep).task = "building";
     }
 
     if (M.cm(creep).task === "harvesting") {
       harvesting();
     } else if (M.cm(creep).task === "storing") {
       storing();
-    } else if (M.cm(creep).task === "building") {
-      roleBuilder.run(creep);
     }
   }
 };

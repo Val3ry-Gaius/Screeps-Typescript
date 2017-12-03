@@ -1,27 +1,37 @@
 import * as _ from "lodash";
 import { buildScaledCreep } from "prototype.spawn";
+import { roleRepairer } from "role.repairer";
+import { ErrorMapper } from "utils/ErrorMapper";
 import * as M from "./memory";
 import { roleBuilder } from "./role.builder";
 import { roleHarvester } from "./role.harvester";
 import { roleUpgrader } from "./role.upgrader";
 import { runTowers } from "./tower";
 
-export function loop() {
+// When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
+// This utility uses source maps to get the line numbers and file names of the original, TS source code
+export const loop = ErrorMapper.wrapLoop( () => {
+  console.log(`Current game tick is ${Game.time}`);
 
+  // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
-    if (!Game.creeps[name]) {
-      delete Memory[name];
+    if (!(name in Game.creeps)) {
+      delete Memory.creeps[name];
     }
   }
 
   // console.log(`Current tick is ${Game.time}`);
+  // +(M.cm(creep).role === "harvester")
   const harvesters = _.filter(Game.creeps, (creep) => M.cm(creep).role === "harvester");
   const upgraders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "upgrader");
   const builders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "builder");
-  const minHarvesters = 10;
-  const minUpgraders = 5;
-  const minBuilders = 5;
-  const totalRoomEnergy = Game.spawns.Spawn1.room.energyCapacityAvailable;
+  const repairers = _.filter(Game.creeps, (creep) => M.cm(creep).role === "repairer");
+  const minHarvesters = 2;
+  const minUpgraders = 2;
+  const minBuilders = 2;
+  const minRepairers = 1;
+  // const totalRoomEnergy = Game.spawns.Spawn1.room.energyCapacityAvailable;
+  const totalRoomEnergy = Game.spawns.Spawn1.room.energyAvailable;
 
   if (harvesters.length < minHarvesters) {
     const newName = "Harvester" + Game.time;
@@ -41,10 +51,10 @@ export function loop() {
     const newName = "Builder" + Game.time;
     // console.log("Spawning new builder: " + newName);
     buildScaledCreep(totalRoomEnergy, newName, "builder", "harvesting");
-  } else {
-    const newName = "Builder" + Game.time;
-    // console.log("Spawning new builder: " + newName);
-    buildScaledCreep(totalRoomEnergy, newName, "builder", "harvesting");
+  } else if (repairers.length < minRepairers) {
+    const newName = "Repairer" + Game.time;
+    // console.log("Spawning new Repairer: " + newName);
+    buildScaledCreep(totalRoomEnergy, newName, "repairer", "harvesting");
   }
 
   if (Game.spawns.Spawn1.spawning) {
@@ -67,6 +77,9 @@ export function loop() {
     if (M.cm(creep).role === "builder") {
       roleBuilder.run(creep);
     }
+    if (M.cm(creep).role === "repairer") {
+      roleRepairer.run(creep);
+    }
   }
   // runTowers.run(Game.rooms.room);
   const towers: Tower[] = Game.rooms.W34N12.find<StructureTower>(FIND_STRUCTURES, {
@@ -78,4 +91,4 @@ export function loop() {
       tower.attack(target);
     }
 }
-}
+});

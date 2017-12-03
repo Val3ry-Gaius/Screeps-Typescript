@@ -13,10 +13,13 @@ export const roleBuilder = {
       filter: (s: Structure) => s.hits < s.hitsMax && s.structureType !== STRUCTURE_WALL
     });*/
     const targetStoring = creep.room.find<Structure>(FIND_STRUCTURES, {
-      filter: (structure: StructureExtension | StructureTower) => {
-        if (structure.structureType === STRUCTURE_EXTENSION || STRUCTURE_TOWER) {
+      filter: (structure: StructureExtension | StructureTower | StructureStorage) => {
+        if (structure.structureType === STRUCTURE_EXTENSION ||
+          structure.structureType === STRUCTURE_TOWER) {
           return structure.energy < structure.energyCapacity;
-        } else {
+          } else if (structure.structureType === STRUCTURE_STORAGE) {
+          return _.sum(structure.store) < structure.storeCapacity;
+          } else {
           return false;
         }
       }
@@ -27,6 +30,8 @@ export const roleBuilder = {
           creep.moveTo(targetStoring[0], { visualizePathStyle: { stroke: "#ffffff" } });
           // creep.say("🔄 storing");
         }
+      } else {
+        M.cm(creep).task = "building";
       }
     };
     const harvesting = () => {
