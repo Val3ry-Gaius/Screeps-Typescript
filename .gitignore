@@ -10,6 +10,8 @@
 /tsc-out
 /node_modules
 /_book
+/.vscode
+/docs
 
 # TypeScript definitions installed by Typings
 /typings

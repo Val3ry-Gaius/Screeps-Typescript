@@ -10,5 +10,29 @@
     "node_modules/**": true,
     "typings/**": true
   },
-  "typescript.tsdk": "./node_modules/typescript/lib"
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/dist": true,
+    "**/docs": true,
+    "**/node_modules": true,
+    "**/.rpt2_cache": true,
+    "**/.editorconfig": true,
+    "**/book.json": true,
+    "**/CONTRIBUTING.md": true,
+    "**/README.md": true,
+    "**/LICENSE": true,
+    "**/package-lock.json": true,
+    "**/package.json": true,
+    "**/tsconfig.json": true,
+    "**/tslint.json": true,
+    "**/.gitignore": true,
+    "**/.gitattributes": true,
+    "**/.vscode": true,
+    "**/yarn.lock": true
+  }
 }
