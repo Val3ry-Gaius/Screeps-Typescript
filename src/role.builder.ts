@@ -17,9 +17,9 @@ export const roleBuilder = {
         if (structure.structureType === STRUCTURE_EXTENSION ||
           structure.structureType === STRUCTURE_TOWER) {
           return structure.energy < structure.energyCapacity;
-          } else if (structure.structureType === STRUCTURE_STORAGE) {
+          /*} else if (structure.structureType === STRUCTURE_STORAGE) {
           return _.sum(structure.store) < structure.storeCapacity;
-          } else {
+          */} else {
           return false;
         }
       }

@@ -10,7 +10,7 @@ import { runTowers } from "./tower";
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
-export const loop = ErrorMapper.wrapLoop( () => {
+export const loop = ErrorMapper.wrapLoop(() => {
   console.log(`Current game tick is ${Game.time}`);
 
   // Automatically delete memory of missing creeps
@@ -30,15 +30,13 @@ export const loop = ErrorMapper.wrapLoop( () => {
   const minUpgraders = 2;
   const minBuilders = 2;
   const minRepairers = 1;
-  // const totalRoomEnergy = Game.spawns.Spawn1.room.energyCapacityAvailable;
-  const totalRoomEnergy = Game.spawns.Spawn1.room.energyAvailable;
+  const totalRoomEnergy = Game.spawns.Spawn1.room.energyCapacityAvailable;
 
   if (harvesters.length < minHarvesters) {
     const newName = "Harvester" + Game.time;
     // console.log("Spawning new harvester: " + newName);
-    buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting");
     if (buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting") === ERR_NOT_ENOUGH_ENERGY &&
-    harvesters.length === 0) {
+      harvesters.length === 0) {
       buildScaledCreep(200, newName, "harvester", "harvesting");
     } else {
       buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting");
@@ -84,11 +82,11 @@ export const loop = ErrorMapper.wrapLoop( () => {
   // runTowers.run(Game.rooms.room);
   const towers: Tower[] = Game.rooms.W34N12.find<StructureTower>(FIND_STRUCTURES, {
     filter: (s: StructureTower) => s.structureType === STRUCTURE_TOWER
-});
+  });
   for (const tower of towers) {
     const target: Creep | null = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
     if (target) {
       tower.attack(target);
     }
-}
+  }
 });

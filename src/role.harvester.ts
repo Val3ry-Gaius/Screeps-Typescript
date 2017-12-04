@@ -14,9 +14,9 @@ export const roleHarvester = {
           structure.structureType === STRUCTURE_SPAWN ||
           structure.structureType === STRUCTURE_TOWER) {
           return structure.energy < structure.energyCapacity;
-        } else if (structure.structureType === STRUCTURE_STORAGE) {
+          /*} else if (structure.structureType === STRUCTURE_STORAGE) {
           return _.sum(structure.store) < structure.storeCapacity;
-          } else {
+          */} else {
           return false;
         }
       }
