@@ -9,14 +9,21 @@ export const roleHarvester = {
 
     // const sources = creep.pos.findClosestByPath(FIND_SOURCES);
     const targetStoring = creep.room.find<Structure>(FIND_STRUCTURES, {
-      filter: (structure: StructureExtension | StructureSpawn | StructureTower | StructureStorage) => {
+      filter: (structure: StructureExtension | StructureSpawn | StructureTower) => {
         if (structure.structureType === STRUCTURE_EXTENSION ||
           structure.structureType === STRUCTURE_SPAWN ||
           structure.structureType === STRUCTURE_TOWER) {
           return structure.energy < structure.energyCapacity;
-          /*} else if (structure.structureType === STRUCTURE_STORAGE) {
+        } else {
+          return false;
+        }
+      }
+    });
+    const targetStorage = creep.room.find<Structure>(FIND_STRUCTURES, {
+      filter: (structure: StructureStorage) => {
+        if (structure.structureType === STRUCTURE_STORAGE) {
           return _.sum(structure.store) < structure.storeCapacity;
-          */} else {
+        } else {
           return false;
         }
       }
@@ -31,6 +38,11 @@ export const roleHarvester = {
       if (targetStoring.length > 0) {
         if (creep.transfer(targetStoring[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
           creep.moveTo(targetStoring[0], { visualizePathStyle: { stroke: "#ffffff" } });
+          // creep.say("🔄 storing");
+        }
+      } else if (targetStorage.length > 0) {
+        if (creep.transfer(targetStorage[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(targetStorage[0], { visualizePathStyle: { stroke: "#ffffff" } });
           // creep.say("🔄 storing");
         }
       }
