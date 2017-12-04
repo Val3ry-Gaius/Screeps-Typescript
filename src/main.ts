@@ -19,9 +19,28 @@ export const loop = ErrorMapper.wrapLoop(() => {
       delete Memory.creeps[name];
     }
   }
+  const rooms = Game.rooms;
+  const spawns = rooms[0].find<Spawn>(FIND_MY_SPAWNS);
+  const sources = rooms[0].find<Source>(FIND_SOURCES);
+  const creepsTotalInRoom = rooms[0].find<Creep>(FIND_MY_CREEPS);
+  const totalRoomEnergy = rooms[0].energyCapacityAvailable;
+  for (const source of sources) {
+    if (_.some(creepsTotalInRoom, (creep: Creep) =>
+    M.cm(creep).role === "staticHarvester" &&
+    M.cm(creep).source === source.id)) {
+      const containers = source.pos.findInRange(FIND_STRUCTURES, 1, {
+        filter: (s: StructureContainer) => s.structureType === STRUCTURE_CONTAINER
+      });
+      if (containers.length > 0) {
+        const assignedRole = "staticHarvester";
+        const newName = assignedRole + Game.time;
+        buildScaledCreep(totalRoomEnergy, newName, assignedRole, "harvesting", source.id);
+      }
+    }
+}
 
   // console.log(`Current tick is ${Game.time}`);
-  // +(M.cm(creep).role === "harvester")
+  // const totalHarvesters = +(M.cm(Game.creeps.creep).role === "harvester");
   const harvesters = _.filter(Game.creeps, (creep) => M.cm(creep).role === "harvester");
   const upgraders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "upgrader");
   const builders = _.filter(Game.creeps, (creep) => M.cm(creep).role === "builder");
@@ -30,29 +49,28 @@ export const loop = ErrorMapper.wrapLoop(() => {
   const minUpgraders = 2;
   const minBuilders = 2;
   const minRepairers = 1;
-  const totalRoomEnergy = Game.spawns.Spawn1.room.energyCapacityAvailable;
 
   if (harvesters.length < minHarvesters) {
     const newName = "Harvester" + Game.time;
     // console.log("Spawning new harvester: " + newName);
-    if (buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting") === ERR_NOT_ENOUGH_ENERGY &&
+    if (buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting", "") === ERR_NOT_ENOUGH_ENERGY &&
       harvesters.length === 0) {
-      buildScaledCreep(200, newName, "harvester", "harvesting");
+      buildScaledCreep(200, newName, "harvester", "harvesting", "");
     } else {
-      buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting");
+      buildScaledCreep(totalRoomEnergy, newName, "harvester", "harvesting", "");
     }
   } else if (upgraders.length < minUpgraders) {
     const newName = "Upgrader" + Game.time;
     // console.log("Spawning new upgrader: " + newName);
-    buildScaledCreep(totalRoomEnergy, newName, "upgrader", "harvesting");
+    buildScaledCreep(totalRoomEnergy, newName, "upgrader", "harvesting", "");
   } else if (builders.length < minBuilders) {
     const newName = "Builder" + Game.time;
     // console.log("Spawning new builder: " + newName);
-    buildScaledCreep(totalRoomEnergy, newName, "builder", "harvesting");
+    buildScaledCreep(totalRoomEnergy, newName, "builder", "harvesting", "");
   } else if (repairers.length < minRepairers) {
     const newName = "Repairer" + Game.time;
     // console.log("Spawning new Repairer: " + newName);
-    buildScaledCreep(totalRoomEnergy, newName, "repairer", "harvesting");
+    buildScaledCreep(totalRoomEnergy, newName, "repairer", "harvesting", "");
   }
 
   if (Game.spawns.Spawn1.spawning) {
