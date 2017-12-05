@@ -19,11 +19,12 @@ export const loop = ErrorMapper.wrapLoop(() => {
       delete Memory.creeps[name];
     }
   }
-  const rooms = Game.rooms;
-  const spawns = rooms[0].find<Spawn>(FIND_MY_SPAWNS);
-  const sources = rooms[0].find<Source>(FIND_SOURCES);
-  const creepsTotalInRoom = rooms[0].find<Creep>(FIND_MY_CREEPS);
-  const totalRoomEnergy = rooms[0].energyCapacityAvailable;
+
+  const spawns = Game.rooms.room.find<Spawn>(FIND_MY_SPAWNS);
+  const allRooms = Game.rooms.room;
+  const sources = allRooms.find<Source>(FIND_SOURCES);
+  const creepsTotalInRoom = allRooms.find<Creep>(FIND_MY_CREEPS);
+  const totalRoomEnergy = allRooms.energyCapacityAvailable;
   for (const source of sources) {
     if (_.some(creepsTotalInRoom, (creep: Creep) =>
     M.cm(creep).role === "staticHarvester" &&
