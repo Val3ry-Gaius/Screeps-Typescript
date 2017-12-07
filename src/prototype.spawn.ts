@@ -1,11 +1,12 @@
 
 export function buildScaledCreep(
   energy: number,
-  newName: string,
   roleName: string,
   taskName: string,
-  sourceIdName: string
+  sourceIdName?: string,
+  containerIdName?: string
 ) {
+  const newName = roleName + Game.time;
   const numberOfBodyParts = Math.floor(energy / 200);
   const body: BodyPartConstant[] = [];
   for (let i = 0; i < numberOfBodyParts; i++) {

@@ -2,7 +2,8 @@ export interface CreepMemory {
   [name: string]: any;
   role: string;
   task: string;
-  source: string;
+  sourceId: string;
+  containerId: string;
 }
 export interface FlagMemory {
   [name: string]: any;
