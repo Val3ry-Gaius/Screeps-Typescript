@@ -73,7 +73,7 @@ export const loop = () => {
     const allCurRmRepairers = _.filter(Game.creeps, (creep) => M.cm(creep).role === "repairer");
     const minNoOfCurRmHarvesters = allCurRmSources.length - allCurRmStaticHarvesters.length;
     const minNoOfCurRmStaticHarvesters = allCurRmSources.length;
-    const minNoOfCargoCarriers = allCurRmSources.length;
+    const minNoOfCargoCarriers = allCurRmContainers.length;
     const minNoOfCurRmUpgraders = 2;
     const minNoOfCurRmBuilders = 2;
     const minNoOfCurRmRepairers = 1;
@@ -122,54 +122,28 @@ export const loop = () => {
           }
         }
       }
-    }
-
-    if (allCurRmHarvesters.length === 0 && allCurRmCargoCarriers.length === 0) {
-      if (allCurRmStaticHarvesters.length < allCurRmSources.length) {
-        if (curRm.storage) {
-          const storageEnoughEnergy = curRm.storage.store[RESOURCE_ENERGY] >= 150 + 550;
-          if (storageEnoughEnergy) {
-            const role = "hauler";
-            buildScaledCreep(availableCurRmEnergy, role, initialTask);
+    } else if (availableCurRmEnergy < 900 &&
+      allCurRmStaticHarvesters.length < minNoOfCurRmStaticHarvesters) {
+      if (allCurRmCargoCarriers.length < minNoOfCargoCarriers) {
+        for (const indevContainer of allCurRmContainers) {
+          const indevContainerId = indevContainer.id;
+          if (!_.some(allCurRmCreeps, (creep: Creep) =>
+            M.cm(creep).role === "cargoCarrier" &&
+            M.cm(creep).containerId === indevContainerId)) {
+              const roleCc = "cargoCarrier";
+              buildScaledCreep(
+                maxCurRmEnergy,
+                roleCc,
+                initialTask,
+                "",
+                indevContainerId);
           }
         }
-      } else {
-        const role = "harvester";
-        buildScaledCreep(availableCurRmEnergy, role, initialTask);
       }
     } else {
-      for (const indevSource of allCurRmSources) {
-        if (!_.some(allCurRmCreeps, (creep: Creep) =>
-          M.cm(creep).role === "staticHarvester" &&
-          M.cm(creep).source === indevSource.id)) {
-          const containers = indevSource.pos.findInRange<StructureContainer>(FIND_STRUCTURES, 1, {
-            filter: (s: StructureContainer) => s.structureType === STRUCTURE_CONTAINER
-          });
-          if (containers.length > 0) {
-            const role = "staticHarvester";
-            const containerId = containers[0].id;
-            buildScaledCreep(maxCurRmEnergy, role, initialTask, indevSource.id, containerId);
-            break;
-          }
-        }
-      }
-
+      break; // break out of loop and wait to see if enough energy next tick.
     }
   }
-  /*for (const source of allRmSources) {
-    if (_.some(creepsTotalInRoom, (creep: Creep) =>
-    M.cm(creep).role === "staticHarvester" &&
-    M.cm(creep).source === source.id)) {
-      const containers = source.pos.findInRange(FIND_STRUCTURES, 1, {
-        filter: (s: StructureContainer) => s.structureType === STRUCTURE_CONTAINER
-      });
-      if (containers.length > 0) {
-        const assignedRole = "staticHarvester";
-        const newName = assignedRole + Game.time;
-        buildScaledCreep(totalRoomEnergy, newName, assignedRole, "harvesting", source.id);
-      }
-    }
-}*/
   const totalRoomEnergy = Game.spawns.Spawn1.room.energyCapacityAvailable;
   // console.log(`Current tick is ${Game.time}`);
   // const totalHarvesters = +(M.cm(Game.creeps.creep).role === "harvester");
